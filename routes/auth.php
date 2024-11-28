@@ -9,7 +9,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ConnectionsController;
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
@@ -53,4 +54,22 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+                
+});
+Route::middleware('auth')->group(function () {
+Route::get('profile-index', [AuthenticatedSessionController::class, 'index'])->name('profile-index');
+Route::get('profile-edit/{id}', [AuthenticatedSessionController::class, 'edit'])->name('profile-edit');
+Route::post('profile/user/update/{id}', [AuthenticatedSessionController::class, 'updateUser'])->name('profile-user-update');
+Route::post('profile/user/delete', [AuthenticatedSessionController::class, 'userDestroy'])->name('profile-user-delete');
+Route::get('profile', [AuthenticatedSessionController::class, 'show'])->name('profile');
+Route::post('profile-update', [AuthenticatedSessionController::class, 'update'])->name('profile-update');
+Route::post('profile-status-update', [AuthenticatedSessionController::class, 'status'])->name('profile-status-update');
+});
+Route::middleware('auth')->group(function(){
+Route::get('notification',[NotificationController::class,'index'])->name('notification');
+
+});
+
+Route::middleware('auth')->group(function(){
+    Route::get('connections',[ConnectionsController::class,'index'])->name('connections');
 });

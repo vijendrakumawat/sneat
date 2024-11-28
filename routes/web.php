@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\LocationController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,5 +36,11 @@ Route::post('/import-insert-update',        [MovieController::class, 'importInse
 Route::get('/export',                       [MovieController::class, 'export']);
 Route::get('/export-custom-data',           [MovieController::class, 'exportCustomData']);
 Route::get('/export-query-data',            [MovieController::class, 'exportQueryData']);
+
+
+Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+Route::post('/locations', [LocationController::class, 'store'])->name('locations.store');
+Route::get('/get-states/{country_id}', [LocationController::class, 'getStates']);
+Route::get('/get-cities/{state_id}', [LocationController::class, 'getCities']);
 
 });

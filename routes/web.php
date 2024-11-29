@@ -19,8 +19,7 @@ use App\Http\Controllers\LocationController;
 //     return view('login');
 // });
 
-// Route::get('/', [AuthenticatedSessionController::class, 'create'])
-//                 ->name('login');
+Route::get('/', [AuthenticatedSessionController::class, 'create']);
 
 
 Route::get('/dashboard', function () {

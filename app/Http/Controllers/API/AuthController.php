@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\ApiUser;
+use Spatie\Permission\Models\Role;
+
+
 
 class AuthController extends Controller
 {
@@ -28,7 +31,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        $user->assignRole($request->role);
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
@@ -55,5 +58,9 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Successfully logged out '
         ]);
+    }
+    public function index(){
+        return response()->json(auth('api')->user());
+
     }
 }

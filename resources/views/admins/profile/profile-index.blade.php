@@ -73,8 +73,13 @@
            @endforeach
           </tbody>
         </table>
+        
+
       </div>
+      <div class="pagination justify-content-end">
+      {{ $data->links() }}
     </div>
+  </div>
   </div>
   <!--/ Bordered Table -->
 </div>

@@ -133,7 +133,8 @@
               
                 <form method="POST" action="{{ route('login') }}" id="productForm" class="mb-3">
                     @csrf
-        
+                    {{-- {{ dd($errors) }} --}}
+
                 <div class="mb-3">
                   <label for="email" class="form-label">Email or Username</label>
                   <input
@@ -141,9 +142,9 @@
                     class="form-control"
                     id="email"
                     name="email"
-                    placeholder="Enter your email or username"
-                    autofocus
+                    placeholder="Enter your email or username"  
                   />
+              
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
@@ -152,7 +153,7 @@
                       <small>Forgot Password?</small>
                     </a>
                   </div>
-                  <div class="input-group input-group-merge">
+                  
                     <input
                       type="password"
                       id="password"
@@ -162,7 +163,7 @@
                       aria-describedby="password"
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                  </div>
+                  
                 </div>
                 <div class="mb-3">
                   <div class="form-check">
@@ -235,6 +236,9 @@
     $(document).on('submit', '#productForm', function (e) {
         e.preventDefault();
         var formData = $(this).serialize();
+        $('.text-danger').remove(); // Clear previous error messages
+        $('.is-invalid').removeClass('is-invalid'); // Remove error class from input fields
+
         $.ajax({
             type: 'POST',
             url: $(this).attr('action'),
@@ -251,13 +255,24 @@
                 }
                 });
             },
+            
             error: function (response) {
+              if (response.status === 422) {
+                let errors = response.responseJSON;
+                $.each(errors, function (field, messages) {
+                    let input = $(`#${field}`); // Find input by ID
+                    input.addClass('is-invalid'); // Add invalid class
+                    input.after(`<span class="text-danger">${messages[0]}</span>`); // Append error message
+                });
+            } else {
+
                 Swal.fire({
                     title: 'Error!',
                     text: 'Something went wrong!',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
+              }
             }
         });
     });

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Validator;
 
 class RegisteredUserController extends Controller
 {
@@ -33,12 +34,21 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        // $request->validate([
+        //     'name' => ['required', 'string', 'max:255'],
+        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        //     'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        // ]);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',   // required and email format validation
+            'password' => ['required', 'confirmed'], // required and number field validation
+            'name' => ['required'],
+            'password_confirmation'=>'required',
         ]);
-
+        if ($validator->fails()){  
+            return response()->json($validator->errors(),422);
+        }
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -53,4 +63,5 @@ class RegisteredUserController extends Controller
         'redirect_url' => (RouteServiceProvider::HOME)
         ]);
     }
+
 }

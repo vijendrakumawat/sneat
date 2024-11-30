@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
     }
     public function index()
     {
-        $data = User::all();
+        $data = User::orderBy('id','desc')->paginate(10);
         
         return view('admins.profile.profile-index' ,compact('data'));
     }
@@ -96,19 +96,40 @@ class AuthenticatedSessionController extends Controller
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(LoginRequest $request)
-    {
-        // dd($request->all());
+//     public function store(LoginRequest $request)
+//     {
+        
+//         $request->authenticate();
+// // 
+//         $request->session()->regenerate();
+//         return response()->json([
+//             'message' => 'Login has been  submitted successfully!',
+//             'redirect_url' => route('dashboard') // optional redirect URL
+//         ]);
+        
+//         // return redirect()->intended(RouteServiceProvider::HOME);
+//     }
+public function store(LoginRequest $request)
+{
+    
+    try {
+        // Authenticate the user
         $request->authenticate();
-
+        
+        // Regenerate session after successful login
         $request->session()->regenerate();
+        
+        // Return success response
         return response()->json([
-            'message' => 'Login has been  submitted successfully!',
+            'message' => 'Login has been submitted successfully!',
             'redirect_url' => route('dashboard') // optional redirect URL
         ]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Handle validation errors
         
-        // return redirect()->intended(RouteServiceProvider::HOME);
-    }
+        return response()->json($e->errors(),422);
+    } 
+}
 
     /**
      * Destroy an authenticated session.

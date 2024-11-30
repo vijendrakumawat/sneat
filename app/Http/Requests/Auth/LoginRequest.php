@@ -50,6 +50,7 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+                'password' => trans('auth.failed'),
             ]);
         }
 
@@ -78,6 +79,10 @@ class LoginRequest extends FormRequest
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
+            'password' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
         ]);
     }
 
@@ -88,6 +93,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        return Str::lower($this->input('email','password')).'|'.$this->ip();
     }
 }
